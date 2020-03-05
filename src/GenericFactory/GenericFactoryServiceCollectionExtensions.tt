@@ -1,0 +1,69 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ output extension=".cs" #>
+<#@ include file="common.ttinclude" once="true"#>
+<#GenerateAll();#>
+<#+
+    private void GenerateAll()
+    {
+        WriteWarning("GenericFactoryServiceCollectionExtensions.tt");
+        GenerateUsings();
+        GenerateNamespace(GenerateExtensionsClass);
+    }
+
+    private void GenerateUsings()
+    {
+        WriteLine("using System.Runtime.CompilerServices;");
+        WriteLine("using Microsoft.Extensions.DependencyInjection;");
+        WriteLine();
+    }
+
+    private void GenerateExtensionsClass()
+    {
+        WriteLine("public static class GenericFactoryServiceCollectionExtensions");
+        WriteBlock(GenerateExtensionMethods);
+    }
+
+    private void GenerateExtensionMethods()
+    {
+        for (var i = 0; i <= MaxParameterCount; i++)
+        {
+            GenerateFactoryExtensionMethod(i);
+        }
+    }
+
+    private void GenerateFactoryExtensionMethod(int parameterCount)
+    {
+        Write("public static IServiceCollection AddFactory");
+        GenerateTypeParameters(parameterCount, true, true, false, false);
+        Write("(this IServiceCollection services)");
+        WriteLine();
+        PushIndent();
+        WriteLine("where TService : class");
+        WriteLine("where TImplementation : class, TService");
+        PopIndent();
+        WriteBlock(WriteFactoryExtensionBody, parameterCount);
+        WriteLine();
+    }
+
+    private void WriteFactoryExtensionBody(int parameterCount)
+    {
+        WriteLine("services.AddWeaklyTypedFactory<TService, TImplementation>();");
+        WriteLine("services.AddTransient");
+        WriteLine("<");
+        PushIndent();
+
+        Write("IFactory");
+        GenerateTypeParameters(parameterCount, true, false, false, false);
+        WriteLine(",");
+        Write("GenericFactory");
+        GenerateTypeParameters(parameterCount, true, false, false, false);
+        PopIndent();
+        WriteLine();
+        Write(">");
+        WriteLine("();");
+        WriteLine("return services;");
+    }
+
+
+#>

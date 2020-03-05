@@ -1,0 +1,91 @@
+﻿<#+
+    const int MaxParameterCount = 15;
+
+    private void PushIndent() => PushIndent("    ");
+    private void WriteLine() => WriteLine(string.Empty);
+
+    private void WriteWarning(string fileName)
+    {
+        WriteLine($"// This file is auto-generated! Edit {fileName} instead");
+    }
+
+    private void WriteBlock(Action inner = null)
+    {
+        WriteBlock<object>(_ => inner?.Invoke(), null);
+    }
+
+    private void WriteBlock<TParameter>(Action<TParameter> inner, TParameter parameter)
+    {
+        WriteLine("{");
+        PushIndent();
+        inner.Invoke(parameter);
+        PopIndent();
+        WriteLine("}");
+    }
+
+    private void WriteBlock<TParameter1, TParameter2>(Action<TParameter1, TParameter2> inner, TParameter1 parameter1, TParameter2 parameter2)
+    {
+        WriteLine("{");
+        PushIndent();
+        inner.Invoke(parameter1, parameter2);
+        PopIndent();
+        WriteLine("}");
+    }
+
+    private void GenerateNamespace(Action inner)
+    {
+        WriteLine("[assembly: InternalsVisibleTo(\"GenericFactory.Tests\")]");
+        WriteLine("namespace GenericFactory");
+        WriteBlock(inner);
+    }
+
+    private void GenerateFunc(int parameterCount)
+    {
+        Write("Func<IServiceProvider");
+        for (var i = 1; i <= parameterCount; i++)
+        {
+            Write(", ");
+            Write($"TArg{i}");
+        }
+        Write(", ");
+        Write("TService>");
+    }
+
+    private void GenerateTypeParameters
+    (
+        int parameterCount,
+        bool addService,
+        bool addImplementation,
+        bool variant,
+        bool contravariant
+    )
+    {
+        Write("<");
+        if (variant)
+        {
+            Write("out ");
+        }
+        if (addService)
+        {
+            Write("TService");
+        }
+        if (addImplementation)
+        {
+            Write(", ");
+            Write("TImplementation");
+        }
+        for (var i = 1; i <= parameterCount; i++)
+        {
+            if (addService || addImplementation || i > 1)
+            {
+                Write(", ");
+            }
+            if (contravariant)
+            {
+                Write("in ");
+            }
+            Write($"TArg{i}");
+        }
+        Write(">");
+    }
+#>

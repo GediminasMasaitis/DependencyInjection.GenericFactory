@@ -1,0 +1,65 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ output extension=".cs" #>
+<#@ include file="common.ttinclude" once="true"#>
+<#GenerateAll();#>
+<#+
+    private void GenerateAll()
+    {
+        WriteWarning("FactoryServiceProviderExtensions.tt");
+        GenerateUsings();
+        GenerateNamespace(GenerateExtensionsClass);
+    }
+
+    private void GenerateUsings()
+    {
+        WriteLine("using System;");
+        WriteLine("using System.Runtime.CompilerServices;");
+        WriteLine("using Microsoft.Extensions.DependencyInjection;");
+        WriteLine();
+    }
+
+    private void GenerateExtensionsClass()
+    {
+        WriteLine("public static class FactoryServiceProviderExtensions");
+        WriteBlock(GenerateExtensionMethods);
+    }
+
+    private void GenerateExtensionMethods()
+    {
+        for (var i = 0; i <= MaxParameterCount; i++)
+        {
+            GenerateProviderExtensionMethod(false, i);
+            GenerateProviderExtensionMethod(true, i);
+        }
+    }
+
+    private void GenerateProviderExtensionMethod(bool required, int parameterCount)
+    {
+        Write("public static IFactory");
+        GenerateTypeParameters(parameterCount, true, false, false, false);
+        Write(" ");
+        Write(required ? "GetRequiredFactory" : "GetFactory");
+        GenerateTypeParameters(parameterCount, true, false, false, false);
+        Write("(this IServiceProvider provider)");
+        WriteLine();
+        PushIndent();
+        WriteLine("where TService : class");
+        PopIndent();
+        WriteBlock(WriteProviderExtensionBody, required, parameterCount);
+        WriteLine();
+    }
+
+    private void WriteProviderExtensionBody(bool required, int parameterCount)
+    {
+        Write("var factory = provider.Get");
+        if (required)
+        {
+            Write("Required");
+        }
+        Write("Service<IFactory");
+        GenerateTypeParameters(parameterCount, true, false, false, false);
+        WriteLine(">();");
+        WriteLine("return factory;");
+    }
+#>

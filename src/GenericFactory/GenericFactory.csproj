@@ -1,0 +1,104 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>DependencyInjection.GenericFactory</PackageId>
+    <Authors>Gediminas Masaitis</Authors>
+    <Description>Generic factory with runtime dependency resolution for Microsoft.Extensions.DependencyInjection</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.0</Version>
+    <ProjectGuid>024571b1-eab0-42ea-a75d-ab35d292f940</ProjectGuid>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="DelegateFactory.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DelegateFactory.tt</DependentUpon>
+    </None>
+    <None Include="DelegateFactoryServiceCollectionExtensions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DelegateFactoryServiceCollectionExtensions.tt</DependentUpon>
+    </None>
+    <None Include="FactoryServiceProviderExtensions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FactoryServiceProviderExtensions.tt</DependentUpon>
+    </None>
+    <None Include="GenericFactoryServiceCollectionExtensions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenericFactoryServiceCollectionExtensions.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="&gt;=2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DelegateFactory.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DelegateFactory.cs</LastGenOutput>
+    </None>
+    <None Update="DelegateFactoryServiceCollectionExtensions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DelegateFactoryServiceCollectionExtensions.cs</LastGenOutput>
+    </None>
+    <None Update="FactoryServiceProviderExtensions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FactoryServiceProviderExtensions.cs</LastGenOutput>
+    </None>
+    <None Update="GenericFactoryServiceCollectionExtensions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GenericFactoryServiceCollectionExtensions.cs</LastGenOutput>
+    </None>
+    <None Update="IFactory.tt">
+      <LastGenOutput>IFactory.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="GenericFactory.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GenericFactory.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="DelegateFactory.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DelegateFactory.tt</DependentUpon>
+    </Compile>
+    <Compile Update="DelegateFactoryServiceCollectionExtensions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DelegateFactoryServiceCollectionExtensions.tt</DependentUpon>
+    </Compile>
+    <Compile Update="FactoryServiceProviderExtensions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FactoryServiceProviderExtensions.tt</DependentUpon>
+    </Compile>
+    <Compile Update="GenericFactoryServiceCollectionExtensions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenericFactoryServiceCollectionExtensions.tt</DependentUpon>
+    </Compile>
+    <Compile Update="IFactory.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>IFactory.tt</DependentUpon>
+    </Compile>
+    <Compile Update="GenericFactory.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenericFactory.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

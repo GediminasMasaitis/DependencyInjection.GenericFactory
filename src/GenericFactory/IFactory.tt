@@ -1,0 +1,51 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ output extension=".cs" #>
+<#@ include file="common.ttinclude" once="true"#>
+<#GenerateAll();#>
+<#+
+    private void GenerateAll()
+    {
+        WriteWarning("IFactory.tt");
+        GenerateUsings();
+        GenerateNamespace(GenerateInterfaces);
+    }
+
+    private void GenerateUsings()
+    {
+        WriteLine("using System.Runtime.CompilerServices;");
+        WriteLine();
+    }
+
+    private void GenerateInterfaces()
+    {
+        for (var i = 0; i <= MaxParameterCount; i++)
+        {
+            GenerateInterface(i);
+        }
+    }
+
+    private void GenerateInterface(int parameterCount)
+    {
+        Write("public interface IFactory");
+        GenerateTypeParameters(parameterCount, true, false, true, true);
+        WriteLine();
+        WriteBlock(GenerateCreateServiceInterfaceDeclaration, parameterCount);
+        WriteLine();
+    }
+
+    private void GenerateCreateServiceInterfaceDeclaration(int parameterCount)
+    {
+        Write("TService CreateService(");
+        for (var i = 1; i <= parameterCount; i++)
+        {
+            Write($"TArg{i} arg{i}");
+            if (i != parameterCount)
+            {
+                Write(", ");
+            }
+        }
+
+        WriteLine(");");
+    }
+#>

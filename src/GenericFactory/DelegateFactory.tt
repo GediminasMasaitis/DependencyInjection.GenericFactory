@@ -1,0 +1,95 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ output extension=".cs" #>
+<#@ include file="common.ttinclude" once="true"#>
+<#GenerateAll();#>
+<#+
+    private void GenerateAll()
+    {
+        WriteWarning("Factory.tt");
+        GenerateUsings();
+        GenerateNamespace(GenerateClasses);
+    }
+
+    private void GenerateUsings()
+    {
+        WriteLine("using System;");
+        WriteLine("using System.Runtime.CompilerServices;");
+        WriteLine();
+    }
+
+    private void GenerateClasses()
+    {
+        for (var i = 0; i <= MaxParameterCount; i++)
+        {
+            GenerateClass(i);
+        }
+    }
+
+    private void GenerateClass(int parameterCount)
+    {
+        Write("internal class DelegateFactory");
+        GenerateTypeParameters(parameterCount, true, false, false, false);
+        WriteLine();
+        PushIndent();
+        Write(": IFactory");
+        GenerateTypeParameters(parameterCount, true, false, false, false);
+        WriteLine();
+        WriteLine("where TService : class");
+        PopIndent();
+
+        WriteBlock(GenerateClassBody, parameterCount);
+        WriteLine();
+    }
+
+    private void GenerateClassBody(int parameterCount)
+    {
+        WriteLine("private readonly IServiceProvider _provider;");
+        Write("private readonly ");
+        GenerateFunc(parameterCount);
+        WriteLine(" _factoryFunction;");
+        WriteLine();
+        GenerateConstructor(parameterCount);
+        WriteLine();
+        GenerateCreateServiceMethod(parameterCount);
+    }
+
+    private void GenerateConstructor(int parameterCount)
+    {
+        Write("public DelegateFactory(IServiceProvider provider, ");
+        GenerateFunc(parameterCount);
+        WriteLine(" factoryFunction)");
+        WriteBlock(() =>
+        {
+            WriteLine("_provider = provider;");
+            WriteLine("_factoryFunction = factoryFunction;");
+        });
+    }
+
+    private void GenerateCreateServiceMethod(int parameterCount)
+    {
+        Write("public TService CreateService(");
+        for (var i = 1; i <= parameterCount; i++)
+        {
+            Write($"TArg{i} arg{i}");
+            if (i != parameterCount)
+            {
+                Write(", ");
+            }
+        }
+
+        WriteLine(")");
+        WriteBlock(GenerateCreateServiceBody, parameterCount);
+    }
+
+    private void GenerateCreateServiceBody(int parameterCount)
+    {
+        Write("return _factoryFunction.Invoke(_provider");
+        for (var i = 1; i <= parameterCount; i++)
+        {
+            Write(", ");
+            Write($"arg{i}");
+        }
+        WriteLine(");");
+    }
+#>

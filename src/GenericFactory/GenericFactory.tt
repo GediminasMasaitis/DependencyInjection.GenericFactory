@@ -1,0 +1,88 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ output extension=".cs" #>
+<#@ include file="common.ttinclude" once="true"#>
+<#GenerateAll();#>
+<#+
+    private void GenerateAll()
+    {
+        WriteWarning("Factory.tt");
+        GenerateUsings();
+        GenerateNamespace(GenerateClasses);
+    }
+
+    private void GenerateUsings()
+    {
+        WriteLine("using System.Runtime.CompilerServices;");
+        WriteLine();
+    }
+
+    private void GenerateClasses()
+    {
+        for (var i = 0; i <= MaxParameterCount; i++)
+        {
+            GenerateClass(i);
+        }
+    }
+
+    private void GenerateClass(int parameterCount)
+    {
+        Write("internal class GenericFactory");
+        GenerateTypeParameters(parameterCount, true, false, false, false);
+        WriteLine();
+        PushIndent();
+        Write(": IFactory");
+        GenerateTypeParameters(parameterCount, true, false, false, false);
+        WriteLine();
+        WriteLine("where TService : class");
+        PopIndent();
+
+        WriteBlock(GenerateClassBody, parameterCount);
+        WriteLine();
+    }
+
+    private void GenerateClassBody(int parameterCount)
+    {
+        WriteLine("private readonly IWeaklyTypedFactory<TService> _typeUnsafeFactory;");
+        WriteLine();
+        GenerateConstructor();
+        WriteLine();
+        GenerateCreateServiceMethod(parameterCount);
+    }
+
+    private void GenerateConstructor()
+    {
+        WriteLine("public GenericFactory(IWeaklyTypedFactory<TService> typeUnsafeFactory)");
+        WriteBlock(() => WriteLine("_typeUnsafeFactory = typeUnsafeFactory;"));
+    }
+
+    private void GenerateCreateServiceMethod(int parameterCount)
+    {
+        Write("public TService CreateService(");
+        for (var i = 1; i <= parameterCount; i++)
+        {
+            Write($"TArg{i} arg{i}");
+            if (i != parameterCount)
+            {
+                Write(", ");
+            }
+        }
+
+        WriteLine(")");
+        WriteBlock(GenerateCreateServiceBody, parameterCount);
+    }
+
+    private void GenerateCreateServiceBody(int parameterCount)
+    {
+        Write("return _typeUnsafeFactory.CreateService(");
+        for (var i = 1; i <= parameterCount; i++)
+        {
+            Write($"arg{i}");
+            if (i != parameterCount)
+            {
+                Write(", ");
+            }
+        }
+        WriteLine(");");
+    }
+#>

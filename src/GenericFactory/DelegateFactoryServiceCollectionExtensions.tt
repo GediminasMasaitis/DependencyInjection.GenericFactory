@@ -1,0 +1,67 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ output extension=".cs" #>
+<#@ include file="common.ttinclude" once="true"#>
+<#GenerateAll();#>
+<#+
+    private void GenerateAll()
+    {
+        WriteWarning("DelegateFactoryServiceCollectionExtensions.tt");
+        GenerateUsings();
+        GenerateNamespace(GenerateExtensionsClass);
+    }
+
+    private void GenerateUsings()
+    {
+        WriteLine("using System;");
+        WriteLine("using System.Runtime.CompilerServices;");
+        WriteLine("using Microsoft.Extensions.DependencyInjection;");
+        WriteLine();
+    }
+
+    private void GenerateExtensionsClass()
+    {
+        WriteLine("public static class DelegateFactoryServiceCollectionExtensions");
+        WriteBlock(GenerateExtensionMethods);
+    }
+
+    private void GenerateExtensionMethods()
+    {
+        for (var i = 0; i <= MaxParameterCount; i++)
+        {
+            GenerateDelegateFactoryExtensionMethod(i);
+        }
+    }
+
+    private void GenerateDelegateFactoryExtensionMethod(int parameterCount)
+    {
+        Write("public static IServiceCollection AddFactory");
+        GenerateTypeParameters(parameterCount, true, false, false, false);
+        Write("(this IServiceCollection services, ");
+        GenerateFunc(parameterCount);
+        Write(" factoryFunction)");
+        WriteLine();
+        PushIndent();
+        WriteLine("where TService : class");
+        //WriteLine("where TImplementation : class, TService");
+        PopIndent();
+        WriteBlock(WriteDelegateFactoryExtensionBody, parameterCount);
+        WriteLine();
+    }
+
+    private void WriteDelegateFactoryExtensionBody(int parameterCount)
+    {
+        WriteLine("services.AddTransient");
+        WriteLine("<");
+        PushIndent();
+        Write("IFactory");
+        GenerateTypeParameters(parameterCount, true, false, false, false);
+        PopIndent();
+        WriteLine();
+        Write(">(provider => new DelegateFactory");
+        GenerateTypeParameters(parameterCount, true, false, false, false);
+        //Write();
+        WriteLine("(provider, factoryFunction));");
+        WriteLine("return services;");
+    }
+#>
