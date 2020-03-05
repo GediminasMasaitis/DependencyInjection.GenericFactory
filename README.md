@@ -15,7 +15,7 @@ The rule of thumb should be to always prefer using `IServiceProvider`, unless:
 * Your service has dependencies that cannot be known during service registration
 * You want to be explicit that *I will only create instances of this specific type*
 
-### Example:
+## Example:
 ``` csharp
 class Startup
 {
@@ -38,7 +38,7 @@ class OtherService
 {
     private IFactory<IFooService, IRuntimeDependency> _factory;
 
-    public SomeService(IFactory<IFooService, IRuntimeDependency> factory)
+    public OtherService(IFactory<IFooService, IRuntimeDependency> factory)
     {
         _factory = factory;
     }
