@@ -5,6 +5,7 @@
     <IsPackable>false</IsPackable>
     <Authors>Gediminas Masaitis</Authors>
     <ProjectGuid>1b7ec57e-2e90-4e43-98a5-94eb86c74133</ProjectGuid>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +19,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GenericFactory\GenericFactory.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

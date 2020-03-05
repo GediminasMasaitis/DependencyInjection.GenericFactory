@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>Gediminas Masaitis</Authors>
     <ProjectGuid>6c591a9a-9149-47cf-bb15-207eb4a599e0</ProjectGuid>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +14,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GenericFactory\GenericFactory.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
