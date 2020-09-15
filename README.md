@@ -17,11 +17,15 @@ The rule of thumb should be to always prefer using `IServiceProvider`, unless:
 
 ## Example:
 ``` csharp
+// In this example we register a NumberLoggingService and a Logger to the dependency injection container, and an OtherService (that will be using our number logger). The logger will be resolved will be resolved from a service container, and the number is passed as a parameter to the factory during runtime and is supplied to the constructor of the NumberLoggingService.
+
 class Startup
 {
     public IServiceCollection RegisterServices(IServiceCollection services)
     {
-        services.AddFactory<IFooService, FooService, UnregisteredDependency>();
+        services.AddSingleton<ILogger, Logger>();
+        services.AddSingleton<OtherService>();
+        services.AddFactory<INumberLoggingService, NumberLoggingService, IRuntimeDependency>();
     }
 
     // ...
@@ -29,24 +33,36 @@ class Startup
 
 interface IFooService {}
 
-class FooService : IFooService
+class NumberLoggingService : INumberLoggingService
 {
-    public FooService(UnregisteredDependency dependency) { }
+    private readonly ILogger _logger;
+    private readonly int _number;
+
+    public FooService(ILogger logger, int number)
+    {
+        _logger = logger;
+        _number = number;
+    }
+
+    public void Log()
+    {
+        _logger.Log("The number is" + _number);
+    }
 }
 
 class OtherService
 {
-    private IFactory<IFooService, IRuntimeDependency> _factory;
+    private IFactory<INumberLoggingService, int> _factory;
 
-    public OtherService(IFactory<IFooService, IRuntimeDependency> factory)
+    public OtherService(IFactory<INumberLoggingService, int> factory)
     {
         _factory = factory;
     }
 
-    public void Run(IRuntimeDependency runtimeDependency)
+    public void Run()
     {
-        var fooService = factory.CreateService(runtimeDependency);
-        // use fooService
+        var numberLogger = _factory.CreateService(42);
+        numberLogger.Log(); // "The number is 42"
     }
 }
 ```
